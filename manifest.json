@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Image Copy Extension",
+  "version": "1.0.0",
+  "description": "Easily copy any image from any website with a single click.",
+  "permissions": [
+    "clipboardWrite",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ]
+}
