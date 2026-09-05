@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Copy Extension</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">Image Copy</div>
+    
+    <div class="row">
+      <div class="row-label">Enable Extension</div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="global-toggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="section-title">Disabled Domains</div>
+    
+    <div class="domain-list" id="domain-list">
+      <!-- List items injected here -->
+    </div>
+
+    <button id="action-btn" class="action-btn">
+      Loading...
+    </button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

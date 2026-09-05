@@ -5,6 +5,47 @@
 
   let currentImage = null;
   let hideTimeout = null;
+  let isExtensionEnabled = true;
+  
+  const hostname = window.location.hostname.toLowerCase().replace(/^www\./, '');
+
+  // Check initial state
+  function checkState() {
+    chrome.storage.sync.get(['disabledSites', 'globalEnabled'], (result) => {
+      const disabledSites = result.disabledSites || [];
+      const globalEnabled = result.globalEnabled !== false; // Default true
+      isExtensionEnabled = globalEnabled && !disabledSites.includes(hostname);
+      if (!isExtensionEnabled) hideButton();
+    });
+  }
+  checkState();
+
+  // Listen for changes
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync') {
+      let shouldUpdate = false;
+      let newGlobal = null;
+      let newDisabled = null;
+
+      if (changes.globalEnabled) {
+        newGlobal = changes.globalEnabled.newValue !== false;
+        shouldUpdate = true;
+      }
+      if (changes.disabledSites) {
+        newDisabled = changes.disabledSites.newValue || [];
+        shouldUpdate = true;
+      }
+
+      if (shouldUpdate) {
+        chrome.storage.sync.get(['disabledSites', 'globalEnabled'], (result) => {
+          const disabledSites = result.disabledSites || [];
+          const globalEnabled = result.globalEnabled !== false;
+          isExtensionEnabled = globalEnabled && !disabledSites.includes(hostname);
+          if (!isExtensionEnabled) hideButton();
+        });
+      }
+    }
+  });
 
   // Create the copy button
   const copyBtn = document.createElement('div');
@@ -171,6 +212,7 @@
 
   // Event delegation on document to catch all image hovers
   document.addEventListener('mouseover', (e) => {
+    if (!isExtensionEnabled) return;
     if (e.target.tagName === 'IMG') {
       const img = e.target;
       // Ignore tiny icons or tracking pixels
